@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+                    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="stylesheet" href="http://github.com/jquery/qunit/raw/master/qunit/qunit.css" type="text/css" media="screen" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://github.com/jquery/qunit/raw/master/qunit/qunit.js"></script>
+<script src="../src/en-US/js/jquery.ctabustracker.js" type="text/javascript"></script>
+<script src="../src/en-US/js/CBTAPIKEY.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function(){
+    //test cross domain requests enabled
+    $.get('http://www.google.com/', function(data){
+        if (data == '') {
+            alert('You must enable cross domain requests in your browser');
+        }
+    });
+    
+    module("jquery.ctabustracker.js");
+    
+    asyncTest("gettime", function() {
+        $.ctabustracker(CBTAPIKEY).gettime({}, function(r){
+            ok(r);
+            equal(r.getUTCFullYear, Date.getUTCFullYear);
+            equal(r.getMonth, Date.getMonth);
+            equal(r.getDay, Date.getDay);
+            equal(r.getHours, Date.getHours);
+            equal(r.getMinutes, Date.getMinutes);
+            equal(r.getSeconds, Date.getSeconds);
+            start();
+        });
+    });
+    
+    asyncTest("getvehicles", function() {
+        $.ctabustracker(CBTAPIKEY).getvehicles({rt:1}, function(r){
+            ok(r);
+            start();
+        });
+    });
+    
+    asyncTest("getroutes", function() {
+        $.ctabustracker(CBTAPIKEY).getroutes({}, function(r){
+            ok(r);
+            ok(r.length > 200);
+            equal(r[1], 'Indiana/Hyde Park');
+            equal(r[2], 'Hyde Park Express');
+            equal(r[3], 'King Drive');
+            start();
+        });
+    });
+    
+    asyncTest("getdirections", function() {
+        $.ctabustracker(CBTAPIKEY).getdirections({rt:20}, function(r){
+            ok(r);
+            same(r, ['East Bound', 'West Bound']);
+            start();
+        });
+    });
+    
+    asyncTest("getstops", function() {
+        $.ctabustracker(CBTAPIKEY).getstops({rt:20, dir:'East Bound'}, function(r){
+            ok(r);
+            ok(r.length > 50);
+            equal(r[4727].stpnm, '1633 W Madison');
+            equal(r[4727].lat, '41.881408012088');
+            equal(r[4727].lon, '-87.668516635895');
+            
+            equal(r[9604].stpnm, 'Austin & Fulton/Pleasant');
+            equal(r[9604].lat, '41.885477728299');
+            equal(r[9604].lon, '-87.774844765663');
+            
+            equal(r[9605].stpnm, 'Austin & West End/Randolph');
+            equal(r[9605].lat, '41.883856263013');
+            equal(r[9605].lon, '-87.774812579155');
+            
+            equal(r[9603].stpnm, 'Austin & Corcoran/South Blvd (Green Line)');
+            equal(r[9603].lat, '41.886943401656');
+            equal(r[9603].lon, '-87.774903774261');
+            start();
+        });
+    });
+    
+    asyncTest("getpatterns", function() {
+        $.ctabustracker(CBTAPIKEY).getpatterns({rt:20, pid:954}, function(r){
+            ok(r);
+            start();
+        });
+    });
+    
+    asyncTest("getpredictions", function() {
+        $.ctabustracker(CBTAPIKEY).getpredictions({rt:20, stpid:456}, function(r){
+            ok(r);
+            start();
+        });
+    });
+    
+    asyncTest("getservicebulletins", function() {
+        $.ctabustracker(CBTAPIKEY).getservicebulletins({stpid:456}, function(r){
+            ok(r);
+            start();
+        });
+    });
+});
+</script>
+  
+</head>
+<body>
+    <h1 id="qunit-header">Testing chicagobustracker Components</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">test markup, will be hidden</div>
+</body>
+</html>
+
