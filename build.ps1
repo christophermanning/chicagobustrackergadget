@@ -2,7 +2,8 @@
 # To allow running powershell scripts: set-executionpolicy remotesigned
 
 $Directory = Get-Item .
-$BuildFileName = $Directory.FullName + "\chicagobustrackergadget.gadget"
+$ZipFilePath = $Directory.FullName + "\chicagobustrackergadget.zip"
+$BuildFileName =  "chicagobustrackergadget.gadget"
 
 # Check if build already exists
 if (test-path $BuildFileName) {
@@ -17,9 +18,12 @@ Copy-Item src .tmp -recurse
 Get-ChildItem .tmp -recurse -force -include .svn | foreach -process {Remove-Item $_.FullName -force -recurse}
 
 # Zip .tmp Contents
-set-content $BuildFileName ("PK" + [char]5 + [char]6 + ("$([char]0)" * 18)) 
-$ZipFile = (new-object -com shell.application).NameSpace($BuildFileName) 
+set-content $ZipFilePath ("PK" + [char]5 + [char]6 + ("$([char]0)" * 18)) 
+$ZipFile = (new-object -com shell.application).NameSpace($ZipFilePath) 
 dir .tmp | foreach {$ZipFile.CopyHere($_.fullname);Start-sleep -milliseconds 500} 
+
+# Renames Item
+Rename-Item $ZipFilePath $BuildFileName
 
 # Delete .tmp Resources
 Remove-Item .tmp -recurse -force
