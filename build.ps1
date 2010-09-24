@@ -2,8 +2,8 @@
 # To allow running powershell scripts: set-executionpolicy remotesigned
 
 $Directory = Get-Item .
-$ZipFilePath = $Directory.FullName + "\chicagobustrackergadget.zip"
-$BuildFileName =  "chicagobustrackergadget.gadget"
+$ZipFilePath = $Directory.FullName + "\" + $Directory.Name + ".zip"
+$BuildFileName =  $Directory.Name + ".gadget"
 
 # Check if build already exists
 if (test-path $BuildFileName) {
