@@ -22,18 +22,19 @@ $(document).ready(function(){
     asyncTest("gettime", function() {
         $.ctabustracker(CBTAPIKEY).gettime({}, function(r){
             ok(r);
-            equal(r.getUTCFullYear, Date.getUTCFullYear);
-            equal(r.getMonth, Date.getMonth);
-            equal(r.getDay, Date.getDay);
-            equal(r.getHours, Date.getHours);
-            equal(r.getMinutes, Date.getMinutes);
-            equal(r.getSeconds, Date.getSeconds);
+            now = new Date();
+            equal(r.getUTCFullYear, now.getUTCFullYear);
+            equal(r.getMonth, now.getMonth);
+            equal(r.getDay, now.getDay);
+            equal(r.getHours, now.getHours);
+            equal(r.getMinutes, now.getMinutes);
+            equal(r.getSeconds, now.getSeconds);
             start();
         });
     });
     
     asyncTest("getvehicles", function() {
-        $.ctabustracker(CBTAPIKEY).getvehicles({rt:1}, function(r){
+        $.ctabustracker(CBTAPIKEY).getvehicles({rt:3}, function(r){
             ok(r);
             start();
         });

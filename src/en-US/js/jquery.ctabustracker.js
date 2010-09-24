@@ -26,7 +26,6 @@
         this.getvehicles = function( params, callback ) {
             fetch("getvehicles", params, function(xml) {
                 var result = new Array();
-
                 $('bustime-response vehicle', xml).each(function(i) {
                     result[i] = {
                         vid    : $('vid', this).text(),
@@ -49,7 +48,6 @@
         this.getroutes = function( params, callback ) {
             fetch("getroutes", params, function(xml) {
                 var result = new Array();
-
                 $('bustime-response route', xml).each(function(i) {
                     result[i] = {
                         rt   : $('rt', this).text(),
@@ -76,7 +74,6 @@
         this.getstops = function( params, callback ) {
             fetch("getstops", params, function(xml) {
                 var result = new Array();
-
                 $('bustime-response stop', xml).each(function(i) {
                     result[i] = {
                         stpid : $('stpid', this).text(), 
@@ -94,7 +91,6 @@
         this.getpatterns = function( params, callback ) {
             fetch("getpatterns", params, function(xml) {
                 var result = new Array();
-
                 $('bustime-response ptr', xml).each(function(i) {
                     result[i] = {
                         pid   : $('pid', this).text(),
@@ -120,7 +116,6 @@
         this.getpredictions = function( params, callback ) {
             fetch("getpredictions", params, function(xml) {
                 var result = new Array();
-
                 $('bustime-response prd', xml).each(function(i) {
                     result[i] = {
                         tmstmp : toDate($('tmstmp', this).text()),
@@ -131,8 +126,8 @@
                         dstp   : $('dstp', this).text(),
                         rt     : $('rt', this).text(),
                         rtdir  : $('rtdir', this).text(),
-                        des    : $('rtdst', this).text(),
-                        prdtm  : $('prdtm', this).text(),
+                        des    : $('des', this).text(),
+                        prdtm  : toDate($('prdtm', this).text()),
                         dly    : $('dly', this).text()
                     }
                 });
@@ -145,7 +140,6 @@
         this.getservicebulletins = function( params, callback ) {
             fetch("getservicebulletins", params, function(xml) {
                 var result = new Array();
-
                 $('bustime-response sb', xml).each(function(i) {
                     result[i] = {
                         nm   : $('nm', this).text(),
@@ -157,7 +151,7 @@
                             rt    : $('srvc rt', this).text(),
                             rtdir : $('srvc rtdir', this).text(),
                             stpid : $('srvc stpid', this).text(),
-                            stpnm : $('srvc stpnm', this).text(),
+                            stpnm : $('srvc stpnm', this).text()
                         }
                     }
                 });
@@ -183,7 +177,7 @@
         
         var toDate = function(timestamp) {
             d = timestamp;
-            return Date(d.substr(0,4), d.substr(4,2), d.substr(6,2), d.substr(9,2), d.substr(13,2), d.substr(16,2));
+            return new Date(d.substr(0,4), (d.substr(4,2)-1), d.substr(6,2), d.substr(9,2), d.substr(12,2), d.substr(15,2));
         }
         
         return this;
