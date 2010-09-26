@@ -15,16 +15,16 @@
     $.ctabustracker = function( apiKey ) {
         //{}
         this.gettime = function( params, callback ) {
-            fetch("gettime", params, function(xml) {
+            fetch("gettime", params, function(xml, error) {
                 $('bustime-response tm', xml).each(function(i) {
-                    callback(toDate($(this).text()));
+                    callback(toDate($(this).text()), error);
                 });
             });
         }
         
         //{vid:vehicleIds, rt:routeDesignators}
         this.getvehicles = function( params, callback ) {
-            fetch("getvehicles", params, function(xml) {
+            fetch("getvehicles", params, function(xml, error) {
                 var result = new Array();
                 $('bustime-response vehicle', xml).each(function(i) {
                     result[i] = {
@@ -40,13 +40,13 @@
                     }
                 });
                 
-                callback(result);
+                callback(result, error);
             });
         }
         
         //{}
         this.getroutes = function( params, callback ) {
-            fetch("getroutes", params, function(xml) {
+            fetch("getroutes", params, function(xml, error) {
                 var result = new Array();
                 $('bustime-response route', xml).each(function(i) {
                     result[i] = {
@@ -55,24 +55,24 @@
                     }
                 });
                 
-                callback(result);
+                callback(result, error);
             }); 
         }
         
         //{rt:routeDesignator}
         this.getdirections = function( params, callback ) {
-            fetch("getdirections", params, function(xml) {
+            fetch("getdirections", params, function(xml, error) {
                 callback(
                     $('bustime-response dir', xml).map(function() {
                         return $(this).text();
-                    }).get()
+                    }).get(), error
                 )
             }); 
         }
         
         //{rt:routeDesignator, dir:direction}
         this.getstops = function( params, callback ) {
-            fetch("getstops", params, function(xml) {
+            fetch("getstops", params, function(xml, error) {
                 var result = new Array();
                 $('bustime-response stop', xml).each(function(i) {
                     result[i] = {
@@ -83,13 +83,13 @@
                     }
                 });
                 
-                callback(result);
+                callback(result, error);
             }); 
         }
         
         //{pid:paramspatternIds, rt:routeDesignator}
         this.getpatterns = function( params, callback ) {
-            fetch("getpatterns", params, function(xml) {
+            fetch("getpatterns", params, function(xml, error) {
                 var result = new Array();
                 $('bustime-response ptr', xml).each(function(i) {
                     result[i] = {
@@ -108,13 +108,13 @@
                     }
                 });
                 
-                callback(result);
+                callback(result, error);
             });
         }
         
         //{stpid:stopIds, rt:routeDesignators, vid:vehicleIds, top:maxResults}
         this.getpredictions = function( params, callback ) {
-            fetch("getpredictions", params, function(xml) {
+            fetch("getpredictions", params, function(xml, error) {
                 var result = new Array();
                 $('bustime-response prd', xml).each(function(i) {
                     result[i] = {
@@ -132,13 +132,13 @@
                     }
                 });
                 
-                callback(result);
+                callback(result, error);
             });
         }
         
         //{rt:routeDesignators, rtdir:direction, stpid:stopIds}
         this.getservicebulletins = function( params, callback ) {
-            fetch("getservicebulletins", params, function(xml) {
+            fetch("getservicebulletins", params, function(xml, error) {
                 var result = new Array();
                 $('bustime-response sb', xml).each(function(i) {
                     result[i] = {
@@ -156,7 +156,7 @@
                     }
                 });
                 
-                callback(result);
+                callback(result, error);
             });
         }
         
@@ -164,14 +164,11 @@
         
         var fetch = function(endpoint, params, callback) {
             $.get('http://www.ctabustracker.com/bustime/api/v1/' + endpoint, $.extend({key:apiKey}, params), function(xml) {
-                var pass = true;
+                var error = false;
                 $('bustime-response error msg', xml).each(function(i) {
-                    alert(endpoint+':'+$(this).text());
-                    pass = false;
+                    error = $(this).text();
                 });
-                if (pass) {
-                    callback(xml);
-                }
+                callback(xml, error);
             }, 'xml');
         }
         
