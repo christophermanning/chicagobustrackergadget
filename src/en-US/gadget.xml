@@ -1,14 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-16"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <gadget>
   <name>Chicago Bus Tracker Gadget</name>
-  <namespace><!--_locComment_text="{Locked}"-->christophermanning.gadgets</namespace>
-  <version><!--_locComment_text="{Locked}"-->1.1.0.0</version>
+  <namespace>christophermanning.gadgets</namespace>
+  <version>1.1.0.0</version>
   <author name="Christopher Manning">
     <info url="http://www.christophermanning.org/projects/chicago-bus-tracker-gadget" text="christophermanning.org"/>
   </author>
-  <copyright>
-    <!--_locComment_text="{Locked}"-->© 2010
-  </copyright>
+  <copyright>© 2010</copyright>
   <description>View estimated arrival times for selected Chicago bus routes.</description>
   <icons>
     <icon width="130" height="67" src="icon.png"/>
@@ -16,7 +14,7 @@
   <hosts>
     <host name="sidebar">
       <base type="HTML" apiVersion="1.0.0" src="ChicagoBusTrackerGadget.html"/>
-      <permissions><!--_locComment_text="{Locked}"-->Full</permissions>
+      <permissions>Full</permissions>
       <platform minPlatformVersion="1.0"/>
       <defaultImage src="drag.png"/>
     </host>
