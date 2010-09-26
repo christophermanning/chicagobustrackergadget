@@ -1,44 +1,46 @@
 ﻿var cbt = $.ctabustracker(CBTAPIKEY);
-document.onreadystatechange = function()
-{    
-    if(document.readyState=="complete"){
-        var savedRoute = System.Gadget.Settings.read("route");
-        var savedDirection = System.Gadget.Settings.read("direction");
-        var savedStop = System.Gadget.Settings.read("stop");
-        
-        if(savedRoute != '' && savedDirection != '' && savedStop != ''){
-            loadFormRoute(savedRoute);
-            loadFormDirection(savedRoute,savedDirection);
-            loadFormStop(savedRoute,savedDirection,savedStop);
-        }else{
-            $('#stop').hide();
-            $('#direction').hide();
-            loadFormRoute('');
+$(function(){    
+    var savedRoute = System.Gadget.Settings.read("route");
+    var savedDirection = System.Gadget.Settings.read("direction");
+    var savedStop = System.Gadget.Settings.read("stop");
+    
+    if(savedRoute != '' && savedDirection != '' && savedStop != ''){
+        loadFormRoute(savedRoute);
+        loadFormDirection(savedRoute,savedDirection);
+        loadFormStop(savedRoute,savedDirection,savedStop);
+    }else{
+        $('#stop').hide();
+        $('#direction').hide();
+        loadFormRoute('');
+    }
+    $('#formRoute').change(function(){
+        if($('#formRoute').val()){
+            $(this).attr('disabled',true);
+            loadFormDirection($('#formRoute').val(),'');
         }
-        $('#formRoute').change(function(){
-            if($('#formRoute').val()){
-                $(this).attr('disabled',true);
-                loadFormDirection($('#formRoute').val(),'');
-            }
-        });
-        $('#formDirection').change(function(){
-            if($('#formRoute').val() && $('#formDirection').val()){
-                $(this).attr('disabled',true);
-                loadFormStop($('#formRoute').val(),$('#formDirection').val(),'');
-            }
-        });
-    }        
-}
+    });
+    $('#formDirection').change(function(){
+        if($('#formRoute').val() && $('#formDirection').val()){
+            $(this).attr('disabled',true);
+            loadFormStop($('#formRoute').val(),$('#formDirection').val(),'');
+        }
+    });
+});
+
 System.Gadget.onSettingsClosing = function(event)
 {
     if (event.closeAction == event.Action.commit){
-        var route = formRoute.value;
+        var formRoute = $('#formRoute');
         var direction = formDirection.value;
-        var stop = formStop.value;
-        if(route != '' && direction != '' && stop != ''){
-            System.Gadget.Settings.write("route", route);
+        var formStop = $('#formStop');
+        if(formRoute.val() != '' && direction != '' && formStop.val() != ''){
+            System.Gadget.Settings.write("route", formRoute.val());
             System.Gadget.Settings.write("direction", direction);
-            System.Gadget.Settings.write("stop", stop);
+            System.Gadget.Settings.write("stop", formStop.val());
+
+            routeDescription = $(':selected', formRoute).text().split(' - ');
+            System.Gadget.Settings.write("rtnum", routeDescription[0]);
+            System.Gadget.Settings.write("stname", $(':selected', formStop).text());
         }else{
             event.cancel = true;
         }
