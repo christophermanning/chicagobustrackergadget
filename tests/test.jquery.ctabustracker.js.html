@@ -20,15 +20,15 @@ $(document).ready(function(){
     module("jquery.ctabustracker.js");
     
     asyncTest("gettime", function() {
-        $.ctabustracker(CBTAPIKEY).gettime({}, function(r){
+        $.ctabustracker(CBTAPIKEY).synctime().gettime({sync:true}, function(r){
             ok(r);
             now = new Date();
-            equal(r.getUTCFullYear, now.getUTCFullYear);
-            equal(r.getMonth, now.getMonth);
-            equal(r.getDay, now.getDay);
-            equal(r.getHours, now.getHours);
-            equal(r.getMinutes, now.getMinutes);
-            equal(r.getSeconds, now.getSeconds);
+            equals(r.getUTCFullYear(), now.getUTCFullYear());
+            equals(r.getMonth(), now.getMonth());
+            equals(r.getDay(), now.getDay());
+            equals(r.getHours(), now.getHours());
+            equals(r.getMinutes(), now.getMinutes());
+            equals(r.getSeconds(), now.getSeconds());
             start();
         });
     });
@@ -44,9 +44,9 @@ $(document).ready(function(){
         $.ctabustracker(CBTAPIKEY).getroutes({}, function(r){
             ok(r);
             ok(r.length > 130);
-            equal(r[0].rtnm, 'Indiana/Hyde Park');
-            equal(r[1].rtnm, 'Hyde Park Express');
-            equal(r[2].rtnm, 'King Drive');
+            equals(r[0].rtnm, 'Indiana/Hyde Park');
+            equals(r[1].rtnm, 'Hyde Park Express');
+            equals(r[2].rtnm, 'King Drive');
             start();
         });
     });
@@ -63,21 +63,21 @@ $(document).ready(function(){
         $.ctabustracker(CBTAPIKEY).getstops({rt:20, dir:'East Bound'}, function(r){
             ok(r);
             ok(r.length > 50);
-            equal(r[0].stpnm, '1633 W Madison');
-            equal(r[0].lat, '41.881408012088');
-            equal(r[0].lon, '-87.668516635895');
+            equals(r[0].stpnm, '1633 W Madison');
+            equals(r[0].lat, '41.881408012088');
+            equals(r[0].lon, '-87.668516635895');
             
-            equal(r[1].stpnm, 'Austin & Corcoran/South Blvd (Green Line)');
-            equal(r[1].lat, '41.886943401656');
-            equal(r[1].lon, '-87.774903774261');
+            equals(r[1].stpnm, 'Austin & Corcoran/South Blvd (Green Line)');
+            equals(r[1].lat, '41.886943401656');
+            equals(r[1].lon, '-87.774903774261');
             
-            equal(r[2].stpnm, 'Austin & Fulton/Pleasant');
-            equal(r[2].lat, '41.885477728299');
-            equal(r[2].lon, '-87.774844765663');
+            equals(r[2].stpnm, 'Austin & Fulton/Pleasant');
+            equals(r[2].lat, '41.885477728299');
+            equals(r[2].lon, '-87.774844765663');
             
-            equal(r[3].stpnm, 'Austin & Washington');
-            equal(r[3].lat, '41.881887285559');
-            equal(r[3].lon, '-87.774742841721');
+            equals(r[3].stpnm, 'Austin & Washington');
+            equals(r[3].lat, '41.881887285559');
+            equals(r[3].lon, '-87.774742841721');
                         
             start();
         });
@@ -108,7 +108,7 @@ $(document).ready(function(){
   
 </head>
 <body>
-    <h1 id="qunit-header">Testing chicagobustracker Components</h1>
+    <h1 id="qunit-header">Testing Components</h1>
     <h2 id="qunit-banner"></h2>
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>

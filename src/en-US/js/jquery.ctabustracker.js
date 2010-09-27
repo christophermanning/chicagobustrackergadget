@@ -13,13 +13,32 @@
 
 (function( $ ){
     $.ctabustracker = function( apiKey ) {
+        //one api request is performed per method
+    
+        //all subesquent calls will return times that are relative to the server time, does not include gettime
+        this.synctime = function (params) {
+            this.gettime({}, function(date, error) {
+                now = new Date();
+                timeOffset = now.getTime() - date.getTime();
+            });
+            return this;
+        }
+    
+        //returns the raw server time unless {sync:true} and synctime has been called
         //{}
         this.gettime = function( params, callback ) {
+            if (typeof params.sync != 'undefined') {
+                sync = params.sync;
+                params.sync = null;
+            } else {
+                sync = false;
+            }
             fetch("gettime", params, function(xml, error) {
                 $('bustime-response tm', xml).each(function(i) {
-                    callback(toDate($(this).text()), error);
+                    callback(toDate($(this).text(), sync), error);
                 });
             });
+            return this;
         }
         
         //{vid:vehicleIds, rt:routeDesignators}
@@ -42,6 +61,7 @@
                 
                 callback(result, error);
             });
+            return this;
         }
         
         //{}
@@ -56,7 +76,8 @@
                 });
                 
                 callback(result, error);
-            }); 
+            });
+            return this;
         }
         
         //{rt:routeDesignator}
@@ -67,7 +88,8 @@
                         return $(this).text();
                     }).get(), error
                 )
-            }); 
+            });
+            return this;
         }
         
         //{rt:routeDesignator, dir:direction}
@@ -84,7 +106,8 @@
                 });
                 
                 callback(result, error);
-            }); 
+            });
+            return this;
         }
         
         //{pid:paramspatternIds, rt:routeDesignator}
@@ -110,6 +133,7 @@
                 
                 callback(result, error);
             });
+            return this;
         }
         
         //{stpid:stopIds, rt:routeDesignators, vid:vehicleIds, top:maxResults}
@@ -134,6 +158,7 @@
                 
                 callback(result, error);
             });
+            return this;
         }
         
         //{rt:routeDesignators, rtdir:direction, stpid:stopIds}
@@ -158,8 +183,10 @@
                 
                 callback(result, error);
             });
+            return this;
         }
         
+        var timeOffset = 0;
         var apiKey = apiKey;
         
         var fetch = function(endpoint, params, callback) {
@@ -172,11 +199,11 @@
             }, 'xml');
         }
         
-        var toDate = function(timestamp) {
-            d = timestamp;
-            return new Date(d.substr(0,4), (d.substr(4,2)-1), d.substr(6,2), d.substr(9,2), d.substr(12,2), d.substr(15,2));
+        var toDate = function(ts, sync) {
+            date = new Date(ts.substr(0,4), (ts.substr(4,2)-1), ts.substr(6,2), ts.substr(9,2), ts.substr(12,2), ts.substr(15,2));
+            return new Date(date.getTime() + (typeof sync == 'undefined' || sync ? timeOffset : 0));
         }
-        
+                
         return this;
     };
 })( jQuery );
