@@ -190,7 +190,7 @@
         var apiKey = apiKey;
         
         var fetch = function(endpoint, params, callback) {
-            $.get('http://www.ctabustracker.com/bustime/api/v1/' + endpoint, $.extend({key:apiKey}, params), function(xml) {
+            $.get('http://www.ctabustracker.com/bustime/api/v1/' + endpoint, $.extend({key:apiKey, cache:false}, params), function(xml) {
                 var error = false;
                 $('bustime-response error msg', xml).each(function(i) {
                     error = $(this).text();
