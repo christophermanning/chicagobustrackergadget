@@ -44,7 +44,7 @@
     height:139px;
 }
 #signage .bus {
-    background-color: '#e8e8e8';
+    zoom: 1;
     height:25px;
     margin:4px 5px;
     clear:both;
