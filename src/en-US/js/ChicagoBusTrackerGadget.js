@@ -3,7 +3,7 @@ var updateFrequencyInSeconds = 60;
 var interval;
 var currentUpdate = 0;
 var currentSecond = 0;
-var cbt = $.ctabustracker(CBTAPIKEY);
+var cbt = $.ctabustracker(CBTAPIKEY).synctime();
 $(function(){
     System.Gadget.settingsUI = 'settings.html';
     System.Gadget.onSettingsClosed = settingsClosed;
