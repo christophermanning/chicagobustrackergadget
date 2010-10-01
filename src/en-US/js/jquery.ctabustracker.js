@@ -29,7 +29,7 @@
         this.gettime = function( params, callback ) {
             if (typeof params.sync != 'undefined') {
                 sync = params.sync;
-                params.sync = null;
+                delete params.sync;
             } else {
                 sync = false;
             }
@@ -190,13 +190,27 @@
         var apiKey = apiKey;
         
         var fetch = function(endpoint, params, callback) {
-            $.get('http://www.ctabustracker.com/bustime/api/v1/' + endpoint, $.extend({key:apiKey, cache:false}, params), function(xml) {
-                var error = false;
-                $('bustime-response error msg', xml).each(function(i) {
-                    error = $(this).text();
-                });
-                callback(xml, error);
-            }, 'xml');
+            $.ajax({
+                cache: false,
+                url: 'http://www.ctabustracker.com/bustime/api/v1/' + endpoint,
+                data: $.extend({key:apiKey}, params),
+                dataType: 'xml',
+                complete: function() {
+                    console.debug(this.url);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.error(textStatus, errorThrown);
+                    callback(false, textStatus);
+                },
+                success: function(xml) {
+                    var error = false;
+                    $('bustime-response error msg', xml).each(function(i) {
+                        error = $(this).text();
+                        console.error(error);
+                    });
+                    callback(xml, error);
+                }
+            });
         }
         
         var toDate = function(ts, sync) {
