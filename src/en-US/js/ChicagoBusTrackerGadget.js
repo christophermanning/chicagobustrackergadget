@@ -16,7 +16,7 @@ function settingsClosed(event)
     if(event.closeAction == event.Action.commit){  
         $('#select-stop').remove();
         startTimer();
-        $('#signage div').live('click', function(e){
+        $('#signage > div').live('click', function(e){
             e.preventDefault();
             if (interval == null) {
                 startTimer();
