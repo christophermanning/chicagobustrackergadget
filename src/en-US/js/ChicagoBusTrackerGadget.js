@@ -1,6 +1,6 @@
 ﻿var numUpdatesBeforeSleep = 10;
 var updateFrequencyInSeconds = 60;
-var interval;
+var interval = null;
 var currentUpdate = 0;
 var currentSecond = 0;
 var cbt = $.ctabustracker(CBTAPIKEY).synctime();
@@ -10,16 +10,20 @@ $(function(){
     $('.bus').hide();
     $('#direction').html('<span id="select-stop">Select Stop &rarr;</span>');
     $('#buses .bus:last').css('border','none');
-    $('.start').click(function(e){
-        e.preventDefault();
-        startTimer();
-    });
 });
 function settingsClosed(event)
 {
     if(event.closeAction == event.Action.commit){  
         $('#select-stop').remove();
         startTimer();
+        $('#signage div').live('click', function(e){
+            e.preventDefault();
+            if (interval == null) {
+                startTimer();
+            } else {
+                stopTimer();
+            }
+        });
     }
 }
 function getTimes(route, stop, stname, rtdir, rtnum){
@@ -58,10 +62,11 @@ function getPredictionText(prediction){
 }
 function startTimer(){
     clearInterval(interval);
+    interval = null;
     currentUpdate=0;
     currentSecond=updateFrequencyInSeconds;
     $('#paused').fadeOut();
-    $('#timer').html('<img src="images/spinner-white.gif"/>').click(function(){stopTimer()});
+    $('#timer').html('<img src="images/spinner-white.gif"/>');
     interval = setInterval(function(){tickTimer();},1000);
 }
 function tickTimer(){
@@ -92,6 +97,7 @@ function tickTimer(){
 }
 function stopTimer(){
     clearInterval(interval);
+    interval = null;
     $('.bus').hide();
     $('#paused').fadeIn();
     $('#signage *').removeAttr('title');
