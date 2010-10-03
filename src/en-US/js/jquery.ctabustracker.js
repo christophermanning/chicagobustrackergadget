@@ -12,6 +12,17 @@
 */
 
 (function( $ ){
+    //prevent console exceptions when firebug is not around
+    if (!window.console || !console.firebug)
+    {
+        var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
+        "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
+
+        window.console = {};
+        for (var i = 0; i < names.length; ++i)
+            window.console[names[i]] = function() {}
+    }
+
     $.ctabustracker = function( apiKey ) {
         //one api request is performed per method
     
@@ -33,7 +44,7 @@
             } else {
                 sync = false;
             }
-            fetch("gettime", params, function(xml, error) {
+            fetch("gettime", $.extend({_:(new Date()).getTime()}, params), function(xml, error) {
                 $('bustime-response tm', xml).each(function(i) {
                     callback(toDate($(this).text(), sync), error);
                 });
@@ -43,7 +54,7 @@
         
         //{vid:vehicleIds, rt:routeDesignators}
         this.getvehicles = function( params, callback ) {
-            fetch("getvehicles", params, function(xml, error) {
+            fetch("getvehicles", $.extend({_:(new Date()).getTime()}, params), function(xml, error) {
                 var result = new Array();
                 $('bustime-response vehicle', xml).each(function(i) {
                     result[i] = {
@@ -66,7 +77,7 @@
         
         //{}
         this.getroutes = function( params, callback ) {
-            fetch("getroutes", params, function(xml, error) {
+            fetch("getroutes", $.extend({_:(new Date()).getDate()}, params), function(xml, error) {
                 var result = new Array();
                 $('bustime-response route', xml).each(function(i) {
                     result[i] = {
@@ -82,7 +93,7 @@
         
         //{rt:routeDesignator}
         this.getdirections = function( params, callback ) {
-            fetch("getdirections", params, function(xml, error) {
+            fetch("getdirections", $.extend({_:(new Date()).getDate()}, params), function(xml, error) {
                 callback(
                     $('bustime-response dir', xml).map(function() {
                         return $(this).text();
@@ -94,7 +105,7 @@
         
         //{rt:routeDesignator, dir:direction}
         this.getstops = function( params, callback ) {
-            fetch("getstops", params, function(xml, error) {
+            fetch("getstops", $.extend({_:(new Date()).getDate()}, params), function(xml, error) {
                 var result = new Array();
                 $('bustime-response stop', xml).each(function(i) {
                     result[i] = {
@@ -112,7 +123,7 @@
         
         //{pid:paramspatternIds, rt:routeDesignator}
         this.getpatterns = function( params, callback ) {
-            fetch("getpatterns", params, function(xml, error) {
+            fetch("getpatterns", $.extend({_:(new Date()).getDate()}, params), function(xml, error) {
                 var result = new Array();
                 $('bustime-response ptr', xml).each(function(i) {
                     result[i] = {
@@ -138,7 +149,7 @@
         
         //{stpid:stopIds, rt:routeDesignators, vid:vehicleIds, top:maxResults}
         this.getpredictions = function( params, callback ) {
-            fetch("getpredictions", params, function(xml, error) {
+            fetch("getpredictions", $.extend({_:(new Date()).getTime()}, params), function(xml, error) {
                 var result = new Array();
                 $('bustime-response prd', xml).each(function(i) {
                     result[i] = {
@@ -163,7 +174,7 @@
         
         //{rt:routeDesignators, rtdir:direction, stpid:stopIds}
         this.getservicebulletins = function( params, callback ) {
-            fetch("getservicebulletins", params, function(xml, error) {
+            fetch("getservicebulletins", $.extend({_:(new Date()).getTime()}, params), function(xml, error) {
                 var result = new Array();
                 $('bustime-response sb', xml).each(function(i) {
                     result[i] = {
@@ -191,7 +202,6 @@
         
         var fetch = function(endpoint, params, callback) {
             $.ajax({
-                cache: false,
                 url: 'http://www.ctabustracker.com/bustime/api/v1/' + endpoint,
                 data: $.extend({key:apiKey}, params),
                 dataType: 'xml',
